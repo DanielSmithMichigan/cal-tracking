@@ -1,0 +1,94 @@
+body{
+    background: #f1f1f1;
+    font-family: 'Poppins', sans-serif; 
+  }
+  
+  h1{
+    letter-spacing: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #f47d0d, #0621e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  } 
+  
+  .fa{ 
+    width: 40px;
+    height: 40px; 
+    line-height: 40px;
+    border: 2px solid #FFF;
+    margin-right: 10px;
+    text-align: center;
+  }
+   
+  .gradient-btn{ 
+    padding-top: 11px;
+    padding-bottom: 11px;
+    line-height: 70px;
+    width: 85%;
+    margin-bottom: 20px;
+    color: #FFF; 
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .btn-1{
+       background-image: linear-gradient(to right top, #fdbe25, #fec928, #ffd42b, #ffdf31, #ffea37); 
+  }
+  
+  .btn-2{
+      background-image: linear-gradient(to right top, #fab823, #f9a315, #f68d0c, #f3770d, #ee5f13); 
+  }
+  
+  .btn-3{
+       background-image: linear-gradient(to right top, #eb4f12, #e74717, #e23f1b, #de361e, #d92d21); 
+  }
+  
+  .btn-4{
+       background-image: linear-gradient(to right top, #ed433f, #df3a37, #d2302f, #c42627, #b71b1f);
+  }
+  
+  .btn-5{ 
+      background-image: linear-gradient(to right top, #b71c24, #c41c3c, #cf2154, #d72c6d, #db3a86); 
+  }
+  
+  .btn-6{
+       background-image: linear-gradient(to top, #d83f91, #d0409b, #c743a5, #bb47af, #ae4bb8);
+  }
+  
+  .btn-7{
+      background-image: linear-gradient(to top, #a94bb9, #9b46b7, #8d42b5, #7d3eb2, #6d3ab0);
+  }
+  
+  .btn-8{
+      background-image: linear-gradient(to top, #5540cd, #493fc7, #3c3ec0, #2e3dba, #1e3bb3);
+  }
+  
+  .btn-9{
+      background-image: linear-gradient(to top, #1c3eb4, #154cbd, #1059c6, #1266ce, #1b73d5);
+  }
+  
+  .btn-10{
+      background-image: linear-gradient(to top, #4292ff, #388cff, #2e86ff, #2380ff, #177aff);
+  }
+  
+  .btn-11{
+       background: linear-gradient(to right, #11998e, #38ef7d);
+  }
+  
+  .btn-12{
+        background: linear-gradient(to right, #aaffa9, #11ffbd); 
+  }
+  
+  .btn-13{
+      background: linear-gradient(to right, #348f50, #56b4d3);
+  }
+   
+  .btn-14{
+      background: linear-gradient(to right, #403b4a, #bbbbb4);
+  }
+   
+  .gradient-btn:hover{
+      cursor: pointer;
+  }
+  

@@ -1,0 +1,4 @@
+**/node_modules
+backend/cdk.out
+frontend/build
+frontend/node_modules
