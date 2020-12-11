@@ -6,11 +6,13 @@ import ResetPageButton from './ResetPageButton';
 import MealTimingGraph from './MealTimingGraph';
 import CalorieHistoryGraph from './CalorieHistoryGraph';
 import TDEEOverTime from './TDEEOverTime';
+import CaloriesRecommendation from './CaloriesRecommendation';
 
 export default function() {
     return (
         <React.Fragment>
             <ResetPageButton />
+            <CaloriesRecommendation />
             <CalorieHistoryGraph />
             <MealTimingGraph
                 mealAttribute={"calories"}

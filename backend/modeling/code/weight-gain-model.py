@@ -41,24 +41,24 @@ def custom_regression(anchor_point_weights, weights, weight_timestamps, anchor_p
         weights_errors.append( ( float(weight) - proposed_y ) ** 2 )
 
     slopes_errors = []
-    # for anchor_point_idx in range(1, len(anchor_point_weights)):
-    #     anchor_point_timestamp_before = anchor_point_timestamps[anchor_point_idx - 1]
-    #     anchor_point_timestamp_after = anchor_point_timestamps[anchor_point_idx]
-    #     anchor_point_weight_before = anchor_point_weights[anchor_point_idx - 1]
-    #     anchor_point_weight_after = anchor_point_weights[anchor_point_idx]
-    #     weight_gained = anchor_point_weight_after - anchor_point_weight_before
-    #     seconds_passed = anchor_point_timestamp_after - anchor_point_timestamp_before
-    #     days_passed = seconds_passed * seconds_per_day
-    #     weeks_passed = days_passed * 7
-    #     lb_per_week = weight_gained / weeks_passed
-    #     slopes_errors.append(abs(lb_per_week * 1.2) ** 3 * days_fraction(days_passed))
+    for anchor_point_idx in range(1, len(anchor_point_weights)):
+        anchor_point_timestamp_before = anchor_point_timestamps[anchor_point_idx - 1]
+        anchor_point_timestamp_after = anchor_point_timestamps[anchor_point_idx]
+        anchor_point_weight_before = anchor_point_weights[anchor_point_idx - 1]
+        anchor_point_weight_after = anchor_point_weights[anchor_point_idx]
+        weight_gained = anchor_point_weight_after - anchor_point_weight_before
+        seconds_passed = anchor_point_timestamp_after - anchor_point_timestamp_before
+        days_passed = seconds_passed * seconds_per_day
+        weeks_passed = days_passed * 7
+        lb_per_week = weight_gained / weeks_passed
+        slopes_errors.append(abs(lb_per_week * 1.4) ** 3 * days_fraction(days_passed))
 
     slopes_errors_2 = []
     for anchor_point_idx in range(1, len(anchor_point_weights)):
         slopes_errors_2.append(
             (float (anchor_point_weights[anchor_point_idx - 1]) - float (anchor_point_weights[anchor_point_idx])) ** 2
         )
-    return np.sum(weights_errors) + np.sum(slopes_errors_2) * 0.01
+    return np.sum(weights_errors) + np.sum(slopes_errors_2) * 0.05# + np.sum(slopes_errors)
 
 def find_idx(timestamp, timestamps):
     for timestamp_idx in range(1, len(timestamps)):
@@ -129,15 +129,31 @@ def main(event, context):
             })
         }
 
+    curr_time = weight_timestamps[-1]
+
     anchor_points_timestamps = [
-        weight_timestamps[0]
+        curr_time
     ]
 
-    curr_time = weight_timestamps[0]
+    while(curr_time > weight_timestamps[0]):
+        next_time = max(curr_time - seconds_per_week * weeks_per_anchor, weight_timestamps[0])
 
-    while(curr_time < weight_timestamps[-1]):
-        curr_time += seconds_per_week * weeks_per_anchor
-        anchor_points_timestamps.append(curr_time)
+        earlier_time = next_time
+        later_time = curr_time
+        found = False
+        count_before = 0
+        for weight_timestamp in weight_timestamps:
+            if weight_timestamp < earlier_time:
+                count_before += 1
+            if weight_timestamp <= later_time and weight_timestamp >= earlier_time:
+                found = True
+
+        curr_time = next_time
+        
+        if (found and count_before >= 2) or curr_time <= weight_timestamps[0]:
+            anchor_points_timestamps.append(curr_time)
+
+    anchor_points_timestamps.reverse()
 
     anchor_point_weights = [ np.mean(weights) for anchor_point in anchor_points_timestamps ]
 

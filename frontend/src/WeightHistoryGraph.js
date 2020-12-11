@@ -75,7 +75,8 @@ function WeightHistoryGraph({ numDays }) {
                     }],
                     yAxes: [{
                         ticks: {
-                            min: _.chain(includedWeights).minBy("weight").get("weight").value()
+                            min: _.chain(includedWeights).map("weight").concat(weightGainModel.spline_weights).min().value(),
+                            max: _.chain(includedWeights).map("weight").concat(weightGainModel.spline_weights).max().value()
                         }
                     }]
                 }
