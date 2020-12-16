@@ -10,7 +10,6 @@ import RightNow from './RightNow';
 export default function Nutrition() {
     return (
         <React.Fragment>
-            <ResetPageButton />
             <SingleGoalProgress
                 goalName='calories'
             />

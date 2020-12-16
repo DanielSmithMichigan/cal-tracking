@@ -46,8 +46,8 @@ export function getStartEndTime({ firstMealTime, lastMealTime }) {
     return { startTime, endTime };
 }
 
-export function ymd(date) {
-    return format( new Date(date) , 'yyyy-MM-dd');
+export function ymd(dateInput) {
+    return format( new Date(dateInput) , 'yyyy-MM-dd');
 }
 
 export function entriesInRangeInclusive({ startOfRange, endOfRange, entries }) {

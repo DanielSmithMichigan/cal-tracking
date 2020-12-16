@@ -9,7 +9,6 @@ import DietSummary from './DietSummary';
 export default function Weight() {
     return (
         <React.Fragment>
-            <ResetPageButton />
             <RecordWeight />
             <DietSummary />
             <WeightProgress />

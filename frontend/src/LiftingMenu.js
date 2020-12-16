@@ -27,7 +27,6 @@ function LiftingMenu() {
     }
     const lifts = _.uniq(_.map(ormEntries, "liftName"));
     return (<React.Fragment>
-        <ResetPageButton />
         {
             lifts.map(liftName => (
                 <div className="text-center">

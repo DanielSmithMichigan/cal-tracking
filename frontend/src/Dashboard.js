@@ -11,6 +11,7 @@ import LiftingMenu from './LiftingMenu';
 import Nutrition from './Nutrition';
 import Weight from './Weight';
 import Analysis from './Analysis';
+import Header from './Header';
 
 function Dashboard() {
     const isLoading = useSelector(selectIsLoading);
@@ -21,18 +22,28 @@ function Dashboard() {
     if (isLoading) {
         return "Loading user data...";
     }
+
+    const out = [
+        <Header />
+    ];
     switch (page) {
         case null:
             return (<DashboardMenu />);
         case "LIFTING_MENU":
-            return (<LiftingMenu />);
+            out.push(<LiftingMenu />);
+            break;
         case "NUTRITION":
+            out.push(<Nutrition />);
+            break;
             return (<Nutrition />);
         case "WEIGHT":
-            return (<Weight />);
+            out.push(<Weight />);
+            break;
         case 'ANALYSIS':
-            return (<Analysis />);
+            out.push(<Analysis />);
+            break;
     }
+    return out;
 }
 
 export default Dashboard;

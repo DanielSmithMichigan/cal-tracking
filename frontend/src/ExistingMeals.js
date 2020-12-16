@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectMeals } from './meals/selectors';
-import { addDiaryEntry } from './diaryEntries/api';
+import { dispatchAddDiaryEntry } from './diaryEntries/actions';
 import { deleteMeal } from './meals/api';
 
 import store from './RootStore';
+import { selectCurrentDate } from './currentDate/selectors';
 
 export default function() {
     const meals = useSelector( selectMeals() );
+    const currentDate = useSelector( selectCurrentDate );
 
     return (
         <div className="horizontal-spanning-segment">
@@ -33,7 +35,7 @@ export default function() {
                                 <td className="text-center">
                                     <button
                                         type="button"
-                                        onClick={() => store.dispatch( addDiaryEntry({ mealName: m.mealName }) )}>
+                                        onClick={() => dispatchAddDiaryEntry({ mealName: m.mealName, currentDate })}>
                                         Add
                                     </button>
                                 </td>

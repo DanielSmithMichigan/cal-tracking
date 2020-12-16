@@ -45,7 +45,7 @@ exports.main = async function (event: any, context: any) {
 
 async function addDiaryEntry(event: any) {
     const eventBody = JSON.parse(event.body);
-    const { user, mealName } = eventBody;
+    const { user, mealName, timestamp = new Date().toISOString() } = eventBody;
     const meal = await new Promise((resolve, reject) => {
         documentClient.get({
             TableName: process.env.MEALS_TABLE_NAME,
@@ -63,7 +63,7 @@ async function addDiaryEntry(event: any) {
             TableName: process.env.DIARY_TABLE_NAME,
             Item: {
                 user,
-                timestamp: new Date().toISOString(),
+                timestamp,
                 meal,
             }
         }, function (err: any) {
@@ -110,14 +110,13 @@ async function deleteEntry(event: any) {
 
 async function recordSingleEntry(event: any) {
     const eventBody = JSON.parse(event.body);
-    const { user, mealName } = eventBody;
-    const meal = eventBody;
+    const { user, meal, timestamp = new Date().toISOString() } = eventBody;
     await new Promise((resolve, reject) => {
         documentClient.put({
             TableName: process.env.DIARY_TABLE_NAME,
             Item: {
                 user,
-                timestamp: new Date().toISOString(),
+                timestamp,
                 meal,
             }
         }, function (err: any) {

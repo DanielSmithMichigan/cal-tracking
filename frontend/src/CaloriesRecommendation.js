@@ -56,8 +56,6 @@ function CaloriesRecommendation() {
         _.map(allDatapoints, 'weight')
     );
 
-    console.log(_.map(allDatapoints, 'weight'));
-
     const x = _.map(allDatapoints, 'x');
     const minX = _.min(x);
     const maxX = _.max(x);

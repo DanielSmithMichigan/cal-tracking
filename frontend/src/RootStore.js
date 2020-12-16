@@ -10,6 +10,7 @@ import weightGainModel from "./weightGainModel/store";
 import webData from "./webData/store";
 import goals from "./goals/store";
 import weights from "./weights/store";
+import currentDate from "./currentDate/store";
 
 const loggerMiddleware = createLogger();
 
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
     weightGainModel,
     webData,
     goals,
-    weights
+    weights,
+    currentDate
 });
 
 export default createStore(

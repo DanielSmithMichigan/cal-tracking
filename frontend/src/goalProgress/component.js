@@ -8,6 +8,7 @@ import constants from './constants';
 
 import { selectGoal } from '../goals/selectors';
 import { selectDiaryEntries } from '../diaryEntries/selectors';
+import { selectCurrentDate } from '../currentDate/selectors';
 
 import TimeOfDay from '../components/timeOfDay';
 
@@ -22,7 +23,8 @@ function SingleGoalProgress({
     const labelPlural = _.get(constants, `pluralLabels.${goalName}`, goalName);
 
 
-    const diaryEntries = useSelector( selectDiaryEntries({ days: 0 }) );
+    const currentDate = useSelector( selectCurrentDate );
+    const diaryEntries = useSelector( selectDiaryEntries({ days: 0, currentDate }) );
 
     const consumedAmount = Math.round(_.sumBy(diaryEntries, `meal.${goalName}`));
 

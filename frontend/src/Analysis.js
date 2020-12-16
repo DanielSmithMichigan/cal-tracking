@@ -11,7 +11,6 @@ import CaloriesRecommendation from './CaloriesRecommendation';
 export default function() {
     return (
         <React.Fragment>
-            <ResetPageButton />
             <CaloriesRecommendation />
             <CalorieHistoryGraph />
             <MealTimingGraph
