@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getFormId, getFormElementValue, getUserId, getStartEndTime } from './util';
+import { getFormId, getFormElementValue, getUserId, getStartEndTime, randomizedDate } from './util';
 
 import { dispatchRecordOneTimeDiaryEntry } from './diaryEntries/actions';
-import { selectCurrentDate } from './currentDate/selectors';
+import { selectModifiedDate } from './currentDate/selectors';
 import { createMeal } from './meals/api';
 
 import store from './RootStore';
 
 function RecordMeal({}) {
-    const currentDate = useSelector( selectCurrentDate );
+    const modifiedDate = useSelector( selectModifiedDate );
     return (
         <div className="horizontal-spanning-segment extra-padding">
             <form id="add-meal-form">
@@ -61,7 +61,7 @@ function RecordMeal({}) {
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => recordOneTimeDiaryEntry({ currentDate })}>
+                        onClick={() => recordOneTimeDiaryEntry({ modifiedDate })}>
                         Record Single Entry
                     </button>
                 </div>
@@ -70,7 +70,8 @@ function RecordMeal({}) {
     );
 }
 
-function recordOneTimeDiaryEntry({ currentDate }) {
+function recordOneTimeDiaryEntry({ modifiedDate }) {
+    const currentDate = randomizedDate({ modifiedDate });
     const mealName = getFormElementValue({ name: "meal-name" });
     const calories = getFormElementValue({ name: "calories" });
     const protein = getFormElementValue({ name: "protein" });

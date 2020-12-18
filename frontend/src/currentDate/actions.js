@@ -1,9 +1,9 @@
 import store from '../RootStore';
 
-export function dispatchSetCurrentDate({ date }) {
+export function dispatchSetCurrentDate({ modifiedDate }) {
     store.dispatch({
         type: 'SET_CURRENT_DATE',
-        date
+        modifiedDate
     });
 }
 

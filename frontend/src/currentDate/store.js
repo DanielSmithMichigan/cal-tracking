@@ -6,16 +6,16 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SET_CURRENT_DATE': {
-            const { date } = action;
+            const { modifiedDate } = action;
             return {
                 ...state,
-                date
+                modifiedDate
             };
         }
         case 'RESET_CURRENT_DATE': {
             return {
                 ...state,
-                date: initialState.date,
+                modifiedDate: initialState.modifiedDate,
                 userDateSelection: initialState.userDateSelection
             };
         }

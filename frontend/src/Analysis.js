@@ -7,12 +7,17 @@ import MealTimingGraph from './MealTimingGraph';
 import CalorieHistoryGraph from './CalorieHistoryGraph';
 import TDEEOverTime from './TDEEOverTime';
 import CaloriesRecommendation from './CaloriesRecommendation';
+import DietAdherence from './DietAdherence';
+import Header from './Header';
 
 export default function() {
     return (
         <React.Fragment>
+            <Header />
+            <DietAdherence goal={"calories"} />
+            <DietAdherence goal={"protein"} />
             <CaloriesRecommendation />
-            <CalorieHistoryGraph />
+            {/* <CalorieHistoryGraph /> */}
             <MealTimingGraph
                 mealAttribute={"calories"}
             />

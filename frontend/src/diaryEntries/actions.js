@@ -1,6 +1,6 @@
 import store from '../RootStore';
 import { retrieveDiaryEntries } from './api';
-import { getUserId } from '../util';
+import { getUserId, randomizedDate } from '../util';
 
 import { goalsApi, mealsApi, diaryApi, weightApi } from '../constants';
 import fetch from 'cross-fetch';
@@ -35,7 +35,8 @@ export function dispatchRecordOneTimeDiaryEntry({
     .then( () => store.dispatch( retrieveDiaryEntries() ) );
 }
 
-export function dispatchAddDiaryEntry ({ mealName, currentDate }) {
+export function dispatchAddDiaryEntry ({ mealName, modifiedDate }) {
+    const currentDate = randomizedDate({ modifiedDate });
     return fetch(`${diaryApi}/diary/add-entry`, {
         method: 'POST',
         mode: 'no-cors',

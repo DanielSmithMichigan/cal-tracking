@@ -18,6 +18,7 @@ import { dispatchFormElementValue } from './webData/actions';
 
 import ResetPageButton from './ResetPageButton';
 import NormalizedOrmGraph from './NormalizedOrmGraph';
+import Header from './Header';
 
 function LiftingMenu() {
     const ormEntries = useSelector(selectOrmEntries());
@@ -27,6 +28,7 @@ function LiftingMenu() {
     }
     const lifts = _.uniq(_.map(ormEntries, "liftName"));
     return (<React.Fragment>
+        <Header />
         {
             lifts.map(liftName => (
                 <div className="text-center">

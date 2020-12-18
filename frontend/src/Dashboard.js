@@ -24,7 +24,6 @@ function Dashboard() {
     }
 
     const out = [
-        <Header />
     ];
     switch (page) {
         case null:
@@ -35,7 +34,6 @@ function Dashboard() {
         case "NUTRITION":
             out.push(<Nutrition />);
             break;
-            return (<Nutrition />);
         case "WEIGHT":
             out.push(<Weight />);
             break;

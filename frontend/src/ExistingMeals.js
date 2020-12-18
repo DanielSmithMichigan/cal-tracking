@@ -6,11 +6,11 @@ import { dispatchAddDiaryEntry } from './diaryEntries/actions';
 import { deleteMeal } from './meals/api';
 
 import store from './RootStore';
-import { selectCurrentDate } from './currentDate/selectors';
+import { selectModifiedDate } from './currentDate/selectors';
 
 export default function() {
     const meals = useSelector( selectMeals() );
-    const currentDate = useSelector( selectCurrentDate );
+    const modifiedDate = useSelector( selectModifiedDate );
 
     return (
         <div className="horizontal-spanning-segment">
@@ -35,7 +35,7 @@ export default function() {
                                 <td className="text-center">
                                     <button
                                         type="button"
-                                        onClick={() => dispatchAddDiaryEntry({ mealName: m.mealName, currentDate })}>
+                                        onClick={() => dispatchAddDiaryEntry({ mealName: m.mealName, modifiedDate })}>
                                         Add
                                     </button>
                                 </td>

@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import _ from 'lodash';
+
 import './stylesheets/buttons.css';
 
-import { selectCurrentDate, selectIsModified, selectUserDateSelection } from './currentDate/selectors';
+import { selectModifiedDate, selectIsModified, selectUserDateSelection } from './currentDate/selectors';
 import { dispatchResetCurrentDate, dispatchUserDateSelection, dispatchSetCurrentDate } from './currentDate/actions';
+
+import { endOfDay, subMilliseconds } from 'date-fns';
 
 import { ymd } from './util';
 
 function ChangeDate() {
-    const currentDate = useSelector(selectCurrentDate);
+    const modifiedDate = useSelector(selectModifiedDate);
+    const currentDate = modifiedDate || new Date();
     const isModified = useSelector(selectIsModified);
     const userDateSelection = useSelector(selectUserDateSelection);
 
@@ -48,7 +53,7 @@ function dateModificationForm({ currentDate, userDateSelection }) {
             <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => dispatchSetCurrentDate({ date: userDateSelection })}>
+                onClick={() => setCurrentDate({ userDateSelection })}>
                 Set
             </button>
         </div>
@@ -61,7 +66,13 @@ function captureSelection(event) {
         month,
         day
     ] = event.target.value.split("-");
-    dispatchUserDateSelection({ userDateSelection: new Date(year, month - 1, day ) });
+    const baseYmd = new Date(year, month - 1, day );
+    const userDateSelection = endOfDay(baseYmd);
+    dispatchUserDateSelection({ userDateSelection });
+}
+
+function setCurrentDate({ userDateSelection }) {
+    dispatchSetCurrentDate({ modifiedDate: userDateSelection })
 }
 
 export default ChangeDate;

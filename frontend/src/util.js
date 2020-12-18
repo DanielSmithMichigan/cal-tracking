@@ -1,4 +1,4 @@
-import { format, differenceInCalendarDays } from 'date-fns';
+import { format, differenceInCalendarDays, subMilliseconds } from 'date-fns';
 
 import * as _ from 'lodash';
 
@@ -180,4 +180,8 @@ export function calculateLinearFitError({ xyPairs, slope, intercept}) {
 export function standardDeviation(array) {
     var avg = _.sum(array) / array.length;
     return Math.sqrt(_.sum(_.map(array, (i) => Math.pow((i - avg), 2))) / array.length);
+}
+
+export function randomizedDate({ modifiedDate }) {
+    return modifiedDate ? subMilliseconds(modifiedDate, _.random(1000, 9999)) : new Date();
 }

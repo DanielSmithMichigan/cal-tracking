@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { selectDiaryEntries } from './diaryEntries/selectors';
 import { deleteDiaryEntry } from './diaryEntries/api';
-import { selectCurrentDate } from './currentDate/selectors';
+import { selectModifiedDate } from './currentDate/selectors';
 
 import store from './RootStore';
 
 export default function DiaryEntriesToday() {
-    const currentDate = useSelector( selectCurrentDate );
+    const modifiedDate = useSelector( selectModifiedDate );
+    const currentDate = modifiedDate || new Date();
     const diaryEntries = useSelector( selectDiaryEntries({ days: 0, currentDate }) );
 
     console.log({
