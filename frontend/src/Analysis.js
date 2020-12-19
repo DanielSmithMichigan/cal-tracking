@@ -16,7 +16,6 @@ export default function() {
             <Header />
             <DietAdherence goal={"calories"} />
             <DietAdherence goal={"protein"} />
-            <CaloriesRecommendation />
             {/* <CalorieHistoryGraph /> */}
             <MealTimingGraph
                 mealAttribute={"calories"}

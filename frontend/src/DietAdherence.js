@@ -44,7 +44,6 @@ function DietAdherence({ goal }) {
         .value();
     const grouped = _.groupBy(dailyAggregates, 'binnedDelta');
     const keys = _.map(Object.keys(grouped), Number);
-    console.log(keys);
     const labels = _.range(_.min(keys), _.max(keys) + binSize, binSize);
     const amounts = _.map(labels, k => _.get(grouped, `${k}.length`, 0));
     const percentages = _.map(amounts, a => a / _.sum(amounts));

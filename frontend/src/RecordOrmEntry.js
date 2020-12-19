@@ -5,6 +5,7 @@ import { getFormId, getFormElementValue, getUserId, getStartEndTime } from './ut
 import { recordOrmEntry } from './ormEntries/api';
 import { selectLiftName } from './webData/selectors';
 import { dispatchFormElementValue } from './webData/actions';
+import { dispatchRecordOneTimeDiaryEntry } from './diaryEntries/actions';
 
 import store from './RootStore';
 
@@ -62,6 +63,13 @@ function recordOrmEntryButton() {
     const repetitions = getFormElementValue({ name: "repetitions" });
     const weight = getFormElementValue({ name: "orm/weight" });
     store.dispatch(recordOrmEntry({ liftName, repetitions, weight }));
+    const currentDate = new Date();
+    dispatchRecordOneTimeDiaryEntry({
+        mealName: "Weight Lifting, 15 Min",
+        calories: '-115',
+        protein: 0,
+        currentDate
+    });
 }
 
 export default RecordOrmEntry;

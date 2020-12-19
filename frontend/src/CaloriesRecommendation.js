@@ -14,6 +14,11 @@ import { selectWeightGainModel } from './weightGainModel/selectors';
 import { selectWeights } from './weights/selectors';
 import { selectDiaryEntries } from './diaryEntries/selectors';
 
+import { dispatchSetGoals } from './goals/actions';
+
+import store from './RootStore';
+
+import { selectGoal } from './goals/selectors';
 
 
 function CaloriesRecommendation() {
@@ -68,6 +73,8 @@ function CaloriesRecommendation() {
     const minX = _.min(x);
     const maxX = _.max(x);
 
+    const caloriesRecommendation = slope + intercept;
+
     useEffect(() => {
         const context = chartRef
             .current
@@ -104,7 +111,7 @@ function CaloriesRecommendation() {
                 title: {
                     display: true,
                     text: [
-                        `Calories Recommendation: ${ _.round(slope + intercept, 2) }`
+                        `Calories Recommendation: ${ _.round(caloriesRecommendation, 2) }`
                     ]
                 },
                 legend: {
@@ -130,11 +137,33 @@ function CaloriesRecommendation() {
     
     return (
         <div className='horizontal-spanning-segment'>
+            <div className="form-group">
+                <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => recordNewCalorieGoal({ caloriesRecommendation })}>
+                    Update Calories Goal to {_.round(caloriesRecommendation)}
+                </button>
+            </div>
             <canvas
                 ref={chartRef}
             />
         </div>
     );
+}
+
+function recordNewCalorieGoal({ caloriesRecommendation }) {
+    const caloriesPerDay = _.round(caloriesRecommendation);
+    const firstMealTime = selectGoal({ goalName: 'firstMealTime' })(store.getState()).value;
+    const lastMealTime = selectGoal({ goalName: 'lastMealTime' })(store.getState()).value;
+    const proteinPerDay = selectGoal({ goalName: 'proteinPerDay' })(store.getState()).value;
+    dispatchSetGoals({
+        firstMealTime,
+        lastMealTime,
+        caloriesPerDay,
+        proteinPerDay
+    });
+    
 }
 
 export default CaloriesRecommendation;

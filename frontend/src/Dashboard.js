@@ -12,6 +12,7 @@ import Nutrition from './Nutrition';
 import Weight from './Weight';
 import Analysis from './Analysis';
 import Header from './Header';
+import Recommendations from './Recommendations';
 
 function Dashboard() {
     const isLoading = useSelector(selectIsLoading);
@@ -39,6 +40,9 @@ function Dashboard() {
             break;
         case 'ANALYSIS':
             out.push(<Analysis />);
+            break;
+        case 'RECOMMENDATIONS':
+            out.push(<Recommendations />);
             break;
     }
     return out;

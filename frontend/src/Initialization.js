@@ -2,7 +2,7 @@ import { retrieveDiaryEntries } from './diaryEntries/api';
 import { getMeals } from './meals/api';
 import { retrieveOrmEntries } from './ormEntries/api';
 import { queryWeightGainModel } from './weightGainModel/api';
-import { retrieveGoals } from './goals/api';
+import { dispatchRetrieveGoals } from './goals/actions';
 import { retrieveWeights } from './weights/api';
 
 import { dispatchIsLoading } from './webData/actions';
@@ -16,7 +16,7 @@ export const userInitialization = () => {
         store.dispatch(getMeals()),
         store.dispatch(retrieveOrmEntries()),
         store.dispatch(queryWeightGainModel()),
-        store.dispatch(retrieveGoals()),
+        dispatchRetrieveGoals(),
         store.dispatch(retrieveWeights()),
     ]).then(() => dispatchIsLoading(false));
 };

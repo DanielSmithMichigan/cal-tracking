@@ -7,7 +7,6 @@ import ChangeDate from './ChangeDate';
 function Header() {
     return (<React.Fragment>
         <ResetPageButton />
-        <ChangeDate />
     </React.Fragment>);
 }
 

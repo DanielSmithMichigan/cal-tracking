@@ -8,6 +8,8 @@ import './stylesheets/buttons.css';
 
 import store from './RootStore';
 
+import ChangeDate from './ChangeDate';
+
 function DashboardMenu() {
     return (
         <div className="text-center">
@@ -35,6 +37,13 @@ function DashboardMenu() {
             <div>
                 <div
                     className="gradient-btn btn-5"
+                    onClick={() => goToAppPage({ page: "RECOMMENDATIONS" })}>
+                    <span>Recommendations</span>
+                </div>
+            </div>
+            <div>
+                <div
+                    className="gradient-btn btn-5"
                     onClick={() => goToAppPage({ page: "ANALYSIS" })}>
                     <span>Analysis</span>
                 </div>
@@ -46,6 +55,7 @@ function DashboardMenu() {
                     <span>Refresh All Data</span>
                 </div>
             </div>
+            <ChangeDate />
         </div>
     );
 }

@@ -5,30 +5,9 @@ import { getFormId, getFormElementValue, getUserId } from './util';
 import * as _ from 'lodash';
 
 import { goalsApi } from './constants';
+import { dispatchSetGoals } from './goals/actions';
 
 function SetGoals({ user }) {
-    function submitGoalsToDynamo() {
-        const user = getUserId();
-        const firstMealTime = getFormElementValue({ name: "first-meal-time" });
-        const lastMealTime = getFormElementValue({ name: "last-meal-time" });
-        const caloriesPerDay = getFormElementValue({ name: "calories-per-day" });
-        const proteinPerDay = getFormElementValue({ name: "protein-per-day-grams" });
-        return fetch(`${goalsApi}/set-goal`, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                firstMealTime,
-                lastMealTime,
-                caloriesPerDay: Number(caloriesPerDay),
-                proteinPerDay: Number(proteinPerDay),
-                user
-            })
-        }).then(response => response.json())
-        .then(() => window.location.reload());
-    }
     return (
         <div>
             <div className='header-text'>
@@ -97,5 +76,21 @@ function SetGoals({ user }) {
     );
 }
 
+function submitGoalsToDynamo() {
+    const user = getUserId();
+    const firstMealTime = getFormElementValue({ name: "first-meal-time" });
+    const lastMealTime = getFormElementValue({ name: "last-meal-time" });
+    const caloriesPerDay = getFormElementValue({ name: "calories-per-day" });
+    const proteinPerDay = getFormElementValue({ name: "protein-per-day-grams" });
+    dispatchSetGoals({
+        user,
+        firstMealTime,
+        lastMealTime,
+        caloriesPerDay,
+        proteinPerDay
+    }).then(() => {
+        window.location.reload();
+    });
+}
 
 export default SetGoals;

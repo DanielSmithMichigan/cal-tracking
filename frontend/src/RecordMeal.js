@@ -29,7 +29,7 @@ function RecordMeal({}) {
                         id={getFormId({ name: 'calories' })}
                         className="form-control"
                         type="number"
-                        min="0"
+                        min="-100000"
                         max="100000"
                         step="1"
                         required />
