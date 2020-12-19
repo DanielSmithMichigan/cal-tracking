@@ -32,11 +32,18 @@ function CaloriesRecommendation() {
         const lbsPerWeek = weightDiff / timeDiff * secPerWeek;
 
 
-        const dietStartIso = new Date(weightGainModel.spline_timestamps[idx - 1] * 1000).toISOString();
-        const dietEndIso = new Date(weightGainModel.spline_timestamps[idx] * 1000).toISOString();
+        const dietStartIso = startOfDay(new Date(weightGainModel.spline_timestamps[idx - 1] * 1000)).toISOString();
+        const dietEndIso = startOfDay(new Date(weightGainModel.spline_timestamps[idx] * 1000)).toISOString();
         const diaryEntriesWithoutToday = _.reject(allDiaryEntries, d => isSameDay(new Date(d.timestamp), new Date()));
-        const diaryEntriesInBetween = _.filter(diaryEntriesWithoutToday, d => d.timestamp <= dietEndIso && d.timestamp >= dietStartIso);
-        const diaryEntriesInBetweenByDay = Object.values(_.groupBy(diaryEntriesInBetween, d => ymd(d.timestamp)));
+        const diaryEntriesInBetween = _.filter(
+            diaryEntriesWithoutToday,
+            d => {
+                return d.timestamp < dietEndIso
+                    && d.timestamp >= dietStartIso;
+            }
+        );
+        const diaryEntriesInBetweenWithYmd = _.map(diaryEntriesInBetween, d => ({ ...d, ymd: ymd(d.timestamp)}));
+        const diaryEntriesInBetweenByDay = Object.values(_.groupBy(diaryEntriesInBetweenWithYmd, 'ymd'));
         const daysReported = diaryEntriesInBetweenByDay.length;
         const caloriesConsumedByDay = _.map(diaryEntriesInBetweenByDay, d => _.sumBy(d, "meal.calories"));
         const meanCaloriesConsumedPerDay = _.round( _.mean( caloriesConsumedByDay ), 2 );
@@ -45,10 +52,13 @@ function CaloriesRecommendation() {
         const daysFraction = Math.min(daysReported / daysCovered, 1);
         const weight = daysFraction * 0.8 ** (ascendingTimestamps.length - pIdx - 2);
 
+        console.log(diaryEntriesInBetweenByDay);
+
         return {
             weight,
             x: lbsPerWeek,
-            y: meanCaloriesConsumedPerDay
+            y: meanCaloriesConsumedPerDay,
+            diaryEntriesInBetweenByDay
         };
     });
     const { equation: [ slope, intercept] } = weightedLinearRegression(

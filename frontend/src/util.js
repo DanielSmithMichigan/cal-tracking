@@ -47,7 +47,11 @@ export function getStartEndTime({ firstMealTime, lastMealTime }) {
 }
 
 export function ymd(dateInput) {
-    return format( new Date(dateInput) , 'yyyy-MM-dd');
+    const d = new Date(dateInput);
+    const d2 = d.toLocaleDateString();
+    const [ month, day, year ] = d2.split('/');
+
+    return `${year}-${month}-${day}`;
 }
 
 export function entriesInRangeInclusive({ startOfRange, endOfRange, entries }) {
