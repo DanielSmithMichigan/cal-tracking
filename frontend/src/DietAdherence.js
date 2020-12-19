@@ -12,46 +12,53 @@ import { addDays, differenceInCalendarDays, startOfDay, format, isSameDay, isAft
 import { selectDiaryEntries } from './diaryEntries/selectors';
 import { selectGoalHistory } from './goals/selectors';
 
+const binSizes = {
+    calories: 100,
+    protein: 20
+};
+
 function DietAdherence({ goal }) {
+    const binSize = binSizes[goal];
     const goalName = `${goal}PerDay`;
     const goalHistory = useSelector( selectGoalHistory({ goalName }) );
     const chartRef = React.createRef();
     const diaryEntries = useSelector( selectDiaryEntries({ days: "ALL" }) );
     const diaryEntriesByDay = _.groupBy( diaryEntries, e => ymd(e.timestamp));
-    const data = _.chain(diaryEntriesByDay)
+    const dailyAggregates = _.chain(diaryEntriesByDay)
         .map((listOfDiaryEntries, date) => {
             const relevantGoal = _.findLast(goalHistory,
                 g => isSameDay(new Date(date), new Date(g.timestamp)) || isAfter(new Date(date), new Date(g.timestamp))
             );
             if (!relevantGoal) return null;
             if (date === ymd(new Date())) return null;
+            const amountConsumed = _.sumBy(listOfDiaryEntries, `meal.${goal}`);
             return {
-                amountConsumed: _.sumBy(listOfDiaryEntries, `meal.${goal}`),
+                amountConsumed,
                 date,
-                goal: relevantGoal.value
+                goal: relevantGoal.value,
+                delta: amountConsumed - relevantGoal.value,
+                binnedDelta: Math.floor((amountConsumed - relevantGoal.value) / binSize) * binSize
             };
         })
         .compact()
         .value();
+    const grouped = _.groupBy(dailyAggregates, 'binnedDelta');
+    const keys = _.map(Object.keys(grouped), Number);
+    console.log(keys);
+    const labels = _.range(_.min(keys), _.max(keys) + binSize, binSize);
+    const amounts = _.map(labels, k => _.get(grouped, `${k}.length`, 0));
+    const percentages = _.map(amounts, a => a / _.sum(amounts));
     useEffect(() => {
         const context = chartRef
             .current
             .getContext("2d");
         new Chart(context, {
-            type: 'line',
+            type: 'bar',
             data: {
-                datasets: [ 
-                    {
-                        data: data.map(d => ({ t: d.date, y: d.amountConsumed })),
-                        fill: false,
-                        borderColor: 'blue'
-                    },
-                    {
-                        data: data.map(d => ({ t: d.date, y: d.goal })),
-                        fill: false,
-                        borderColor: 'red'
-                    }
-                ]
+                labels: labels,
+                datasets: [{
+                    data: percentages
+                }]
             },
             options: {
                 title: {
@@ -64,11 +71,9 @@ function DietAdherence({ goal }) {
                     display: false,
                 },
                 scales: {
-                    xAxes: [{
-                        type: 'time',
-                        position: 'bottom',
-                        time: {
-                            unit: 'day'
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
                         }
                     }]
                 }

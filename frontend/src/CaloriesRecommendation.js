@@ -52,8 +52,6 @@ function CaloriesRecommendation() {
         const daysFraction = Math.min(daysReported / daysCovered, 1);
         const weight = daysFraction * 0.8 ** (ascendingTimestamps.length - pIdx - 2);
 
-        console.log(diaryEntriesInBetweenByDay);
-
         return {
             weight,
             x: lbsPerWeek,
