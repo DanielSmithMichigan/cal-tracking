@@ -20,6 +20,8 @@ import store from './RootStore';
 
 import { selectGoal } from './goals/selectors';
 
+const decayFactor = 0.9;
+
 
 function CaloriesRecommendation() {
     const chartRef = React.createRef();
@@ -55,7 +57,7 @@ function CaloriesRecommendation() {
 
         const daysCovered = differenceInCalendarDays(new Date(dietEndIso), new Date(dietStartIso));
         const daysFraction = Math.min(daysReported / daysCovered, 1);
-        const weight = daysFraction * 0.8 ** (ascendingTimestamps.length - pIdx - 2);
+        const weight = daysFraction * decayFactor ** (ascendingTimestamps.length - pIdx - 2);
 
         return {
             weight,
