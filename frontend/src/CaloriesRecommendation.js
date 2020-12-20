@@ -77,6 +77,8 @@ function CaloriesRecommendation() {
 
     const caloriesRecommendation = slope + intercept;
 
+    console.log(_.map(allDatapoints, 'weight'));
+
     useEffect(() => {
         const context = chartRef
             .current
