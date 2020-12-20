@@ -66,7 +66,7 @@ function recordOrmEntryButton() {
     const currentDate = new Date();
     dispatchRecordOneTimeDiaryEntry({
         mealName: "Weight Lifting, 15 Min",
-        calories: '-115',
+        calories: '-57.5',
         protein: 0,
         currentDate
     });

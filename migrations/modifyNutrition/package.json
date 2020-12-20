@@ -1,0 +1,15 @@
+{
+  "name": "modifynutrition",
+  "version": "1.0.0",
+  "description": "",
+  "main": "execute.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-fetch": "^3.0.6",
+    "lodash": "^4.17.20"
+  }
+}
