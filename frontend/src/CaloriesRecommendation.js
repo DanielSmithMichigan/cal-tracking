@@ -137,11 +137,7 @@ function CaloriesRecommendation() {
                 title: {
                     display: true,
                     text: [
-                        `Intercept: ${_.round(intercept)}`,
-                        `Slope: ${_.round(slope)}`,
-                        `Recommendation (slope + intercept): ${_.round(caloriesRecommendation)}`,
-                        `Sanity Check: How many excess calories eventually result in a pound gained?`,
-                        `Answer: ${_.round(slope * 7)}`
+                        `Intercept: ${_.round(intercept)} Slope: ${_.round(slope)}`,
                     ]
                 },
                 legend: {
@@ -170,18 +166,27 @@ function CaloriesRecommendation() {
     return (
         <React.Fragment>
             <div className='horizontal-spanning-segment'>
+                Update Calories Goal
+                <br />
                 {
                     _.map(recommendations, r => (
                         <div className="form-group">
+                            <br /><br />
                             <button
                                 type="button"
-                                className="btn btn-primary"
+                                className="btn btn-primary btn-lg"
                                 onClick={() => recordNewCalorieGoal({ caloriesRecommendation: r.value })}>
-                                ({r.label}) Update calories goal to {_.round(r.value)}
+                                {_.round(r.value)}
                             </button>
+                            <br />{r.label}
                         </div>
                     ))
                 }
+            </div>
+            <div className='horizontal-spanning-segment'>
+                Recommendation (slope + intercept): ${_.round(caloriesRecommendation)}
+                <br />Sanity Check: How many excess calories eventually result in a pound gained?
+                <br />Answer: {_.round(slope * 7)}
             </div>
             <div className='horizontal-spanning-segment'>
                 <canvas
