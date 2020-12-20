@@ -46,8 +46,20 @@ function SingleGoalProgress({
         <div className='horizontal-spanning-segment'>
             For <TimeOfDay time={new Date()}/>, you are at {consumedAmount}/{goalConsumedAmount} (<span className={surplusLanguage}>{surplusSymbol} {Math.abs(differenceConsumedVsGoal)}</span>) {labelPlural}. <br />
             For your daily goal, you are at {consumedAmount}/{goalAmountPerDay} (<span className={surplusLanguageDay}>{surplusSymbolDay} {Math.abs(differenceConsumedVsDay)}</span>).<br />
+            {goalName === 'calories' && ConsumptionOnly({ diaryEntries, goalName }) }
         </div>
     );
+}
+
+function ConsumptionOnly({ diaryEntries, goalName }) {
+    const positiveDiaryEntries = _.filter(diaryEntries, d => _.get(d, `meal.${goalName}`, 0) > 0);
+    const positiveConsumedAmount = _.sumBy(positiveDiaryEntries, d => _.get(d, `meal.${goalName}`, 0));
+    const negativeDiaryEntries = _.filter(diaryEntries, d => _.get(d, `meal.${goalName}`, 0) < 0);
+    const negativeConsumedAmount = _.sumBy(negativeDiaryEntries, d => _.get(d, `meal.${goalName}`, 0));
+    return (<React.Fragment>
+        Consumed: {positiveConsumedAmount}<br />
+        Burned: {negativeConsumedAmount}<br />
+    </React.Fragment>);
 }
 
 export default SingleGoalProgress;

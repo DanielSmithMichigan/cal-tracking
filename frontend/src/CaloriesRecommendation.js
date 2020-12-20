@@ -75,9 +75,31 @@ function CaloriesRecommendation() {
     const minX = _.min(x);
     const maxX = _.max(x);
 
-    const caloriesRecommendation = slope + intercept;
+    const recommendations = [{
+        label: "1 lbs/week from 3000 cal/pound",
+        value: intercept + (3000/7)
+    },{
+        label: "0.5 lbs/week from 3000 cal/pound",
+        value: intercept + (3000/7/2)
+    },{
+        label: "1 lbs/week from slope",
+        value: intercept + slope
+    },{
+        label: "Maintenance",
+        value: intercept
+    },{
+        label: "-1 lbs/week from slope",
+        value: intercept - slope
+    },{
+        label: "-0.5 lbs/week from 3000 cal/pound",
+        value: intercept - (3000/7/2)
+    },{
+        label: "-1 lbs/week from 3000 cal/pound",
+        value: intercept - (3000/7)
+    }];
 
-    console.log(_.map(allDatapoints, 'weight'));
+    const caloriesRecommendation = slope + intercept;
+    const caloriesRecommendation3000 = intercept + (3000/7);
 
     useEffect(() => {
         const context = chartRef
@@ -115,7 +137,11 @@ function CaloriesRecommendation() {
                 title: {
                     display: true,
                     text: [
-                        `Calories Recommendation: ${ _.round(caloriesRecommendation, 2) }`
+                        `Intercept: ${_.round(intercept)}`,
+                        `Slope: ${_.round(slope)}`,
+                        `Recommendation (slope + intercept): ${_.round(caloriesRecommendation)}`,
+                        `Sanity Check: How many excess calories eventually result in a pound gained?`,
+                        `Answer: ${_.round(slope * 7)}`
                     ]
                 },
                 legend: {
@@ -123,12 +149,14 @@ function CaloriesRecommendation() {
                 },
                 scales: {
                     xAxes: [{
+                        title: "Pounds per week",
                         position: 'bottom',
                         time: {
                             // min: numDays ? subDays(new Date(), numDays) : null
                         },
                     }],
                     yAxes: [{
+                        title: "Avg Calories Consumed",
                         ticks: {
                             // min: _.chain(includedWeights).map("weight").concat(weightGainModel.spline_weights).min().value(),
                             // max: _.chain(includedWeights).map("weight").concat(weightGainModel.spline_weights).max().value()
@@ -140,19 +168,27 @@ function CaloriesRecommendation() {
     }, [ weights, weightGainModel ]);
     
     return (
-        <div className='horizontal-spanning-segment'>
-            <div className="form-group">
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => recordNewCalorieGoal({ caloriesRecommendation })}>
-                    Update Calories Goal to {_.round(caloriesRecommendation)}
-                </button>
+        <React.Fragment>
+            <div className='horizontal-spanning-segment'>
+                {
+                    _.map(recommendations, r => (
+                        <div className="form-group">
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => recordNewCalorieGoal({ caloriesRecommendation: r.value })}>
+                                ({r.label}) Update calories goal to {_.round(r.value)}
+                            </button>
+                        </div>
+                    ))
+                }
             </div>
-            <canvas
-                ref={chartRef}
-            />
-        </div>
+            <div className='horizontal-spanning-segment'>
+                <canvas
+                    ref={chartRef}
+                />
+            </div>
+        </React.Fragment>
     );
 }
 
