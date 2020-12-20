@@ -184,7 +184,7 @@ function CaloriesRecommendation() {
                 }
             </div>
             <div className='horizontal-spanning-segment'>
-                Recommendation (slope + intercept): ${_.round(caloriesRecommendation)}
+                Recommendation (slope + intercept): {_.round(caloriesRecommendation)}
                 <br />Sanity Check: How many excess calories eventually result in a pound gained?
                 <br />Answer: {_.round(slope * 7)}
             </div>
