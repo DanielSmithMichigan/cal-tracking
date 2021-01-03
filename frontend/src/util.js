@@ -51,7 +51,7 @@ export function ymd(dateInput) {
     const d2 = d.toLocaleDateString();
     const [ month, day, year ] = d2.split('/');
 
-    return `${year}-${month}-${day}`;
+    return `${year}-${_.padStart(month, 2, '0')}-${_.padStart(day, 2, 0)}`;
 }
 
 export function entriesInRangeInclusive({ startOfRange, endOfRange, entries }) {
