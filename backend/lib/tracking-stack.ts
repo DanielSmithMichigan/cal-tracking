@@ -93,7 +93,8 @@ export class TrackingStack extends core.Construct {
                 WEIGHTS_TABLE_NAME: weightTable.tableName,
                 ORM_TABLE_NAME: ormTable.tableName
             },
-            role
+            role,
+            timeout: core.Duration.seconds(25)
         });
 
         const weightService = new lambda.Function(this, "WeightServiceHandler", {
@@ -107,7 +108,8 @@ export class TrackingStack extends core.Construct {
                 WEIGHTS_TABLE_NAME: weightTable.tableName,
                 ORM_TABLE_NAME: ormTable.tableName
             },
-            role
+            role,
+            timeout: core.Duration.seconds(25)
         });
 
         const ormService = new lambda.Function(this, "OrmServiceHandler", {

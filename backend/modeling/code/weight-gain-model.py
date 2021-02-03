@@ -9,7 +9,7 @@ import numpy as np
 import decimal
 
 min_days_requirement = 7.0
-weeks_per_anchor = 1.0
+weeks_per_anchor = 3.0
 seconds_per_day = 60 * 60 * 24
 seconds_per_week = seconds_per_day * 7
     

@@ -68,13 +68,13 @@ async function deleteWeight(event: any) {
 
 async function recordWeight(event: any) {
     const eventBody = JSON.parse(event.body);
-    const { user, weight } = eventBody;
+    const { user, weight, timestamp } = eventBody;
     await new Promise((resolve, reject) => {
         documentClient.put({
             TableName: process.env.WEIGHTS_TABLE_NAME,
             Item: {
                 user,
-                timestamp: new Date().toISOString(),
+                timestamp: timestamp || new Date().toISOString(),
                 weight,
             }
         }, function (err: any) {
