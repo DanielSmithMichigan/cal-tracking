@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { getFormId, getFormElementValue } from './util';
+import { getFormId } from './util';
 
 import { recordWeight } from './weights/api';
 
 import store from './RootStore';
 
-export default function() {
+export default function RecordWeight() {
+    const [weight, setWeight] = useState('');
+
+    const recordWeightButton = () => {
+        store.dispatch(
+            recordWeight({ weight })
+        );
+        setWeight('');
+    };
+
     return (
         <div className="horizontal-spanning-segment extra-padding">
             <form id="record-weight-form">
@@ -18,6 +27,8 @@ export default function() {
                         min="0"
                         max="100000"
                         step="1"
+                        value={weight}
+                        onChange={(event) => setWeight(event.target.value)}
                         required />
                     
                     <small>Weight(lb)</small>
@@ -33,11 +44,4 @@ export default function() {
             </form>
         </div>
     )
-}
-
-function recordWeightButton() {
-    const weight = getFormElementValue({ name: "weight" });
-    store.dispatch(
-        recordWeight({ weight })
-    );
 }
