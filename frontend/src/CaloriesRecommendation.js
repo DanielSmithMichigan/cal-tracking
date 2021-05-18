@@ -5,7 +5,7 @@ import './App.css';
 
 import * as _ from 'lodash';
 
-import { weightsSlopeIntercept, ymd, entriesInRangeInclusive, secPerWeek, weightedLinearRegression } from './util';
+import { weightsSlopeIntercept, ymd, entriesInRangeInclusive, msPerWeek, weightedLinearRegression } from './util';
 
 import { addDays, differenceInCalendarDays, startOfDay, subDays, endOfDay, isSameDay } from 'date-fns';
 
@@ -20,7 +20,7 @@ import store from './RootStore';
 
 import { selectGoal } from './goals/selectors';
 
-const decayFactor = 0.9;
+const decayFactor = 0.8;
 
 
 function CaloriesRecommendation() {
@@ -30,17 +30,17 @@ function CaloriesRecommendation() {
     const weightGainModel = useSelector( selectWeightGainModel );
     const allDiaryEntries = useSelector( selectDiaryEntries() );
 
-    const ascendingTimestamps = weightGainModel.spline_timestamps.slice(0).sort();
+    const ascendingTimestamps = weightGainModel.splineTimes.slice(0).sort();
 
     const allDatapoints = ascendingTimestamps.slice(1).map((timestamp, pIdx) => {
         const idx = pIdx + 1;
-        const weightDiff = weightGainModel.spline_weights[idx] - weightGainModel.spline_weights[idx - 1];
-        const timeDiff = weightGainModel.spline_timestamps[idx] - weightGainModel.spline_timestamps[idx - 1];
-        const lbsPerWeek = weightDiff / timeDiff * secPerWeek;
+        const weightDiff = weightGainModel.splineWeights[idx] - weightGainModel.splineWeights[idx - 1];
+        const timeDiff = weightGainModel.splineTimes[idx] - weightGainModel.splineTimes[idx - 1];
+        const lbsPerWeek = weightDiff / timeDiff * msPerWeek;
 
 
-        const dietStartIso = startOfDay(new Date(weightGainModel.spline_timestamps[idx - 1] * 1000)).toISOString();
-        const dietEndIso = startOfDay(new Date(weightGainModel.spline_timestamps[idx] * 1000)).toISOString();
+        const dietStartIso = startOfDay(new Date(weightGainModel.splineTimes[idx - 1])).toISOString();
+        const dietEndIso = startOfDay(new Date(weightGainModel.splineTimes[idx])).toISOString();
         const diaryEntriesWithoutToday = _.reject(allDiaryEntries, d => isSameDay(new Date(d.timestamp), new Date()));
         const diaryEntriesInBetween = _.filter(
             diaryEntriesWithoutToday,
@@ -75,31 +75,18 @@ function CaloriesRecommendation() {
     const minX = _.min(x);
     const maxX = _.max(x);
 
-    const recommendations = [{
-        label: "1 lbs/week from 3000 cal/pound",
-        value: intercept + (3000/7)
-    },{
-        label: "0.5 lbs/week from 3000 cal/pound",
-        value: intercept + (3000/7/2)
-    },{
-        label: "1 lbs/week from slope",
-        value: intercept + slope
-    },{
-        label: "Maintenance",
-        value: intercept
-    },{
-        label: "-1 lbs/week from slope",
-        value: intercept - slope
-    },{
-        label: "-0.5 lbs/week from 3000 cal/pound",
-        value: intercept - (3000/7/2)
-    },{
-        label: "-1 lbs/week from 3000 cal/pound",
-        value: intercept - (3000/7)
-    }];
+    const r = _.range(0.1, 1.1, 0.1);
+    const r_neg = _.reverse(r.map(e => -e));
+    const vals = r_neg.concat([0]).concat(r);
+
+    const recommendations = vals.map(
+        e => ({
+            label: `${_.round(e, 2)} lbs/week from slope`,
+            value: intercept + e * slope
+        })
+    );
 
     const caloriesRecommendation = slope + intercept;
-    const caloriesRecommendation3000 = intercept + (3000/7);
 
     useEffect(() => {
         const context = chartRef
@@ -154,8 +141,8 @@ function CaloriesRecommendation() {
                     yAxes: [{
                         title: "Avg Calories Consumed",
                         ticks: {
-                            // min: _.chain(includedWeights).map("weight").concat(weightGainModel.spline_weights).min().value(),
-                            // max: _.chain(includedWeights).map("weight").concat(weightGainModel.spline_weights).max().value()
+                            // min: _.chain(includedWeights).map("weight").concat(weightGainModel.splineWeights).min().value(),
+                            // max: _.chain(includedWeights).map("weight").concat(weightGainModel.splineWeights).max().value()
                         }
                     }]
                 }

@@ -50,7 +50,7 @@ function WeightHistoryGraph({ numDays }) {
                         lineTension: 0,
                         borderDash: [5],
                         fill: false,
-                        data: weightGainModel.spline_weights.map((weight, k) => ({ x: new Date(weightGainModel.spline_timestamps[k] * 1000), y: weight }))
+                        data: weightGainModel.splineWeights.map((weight, k) => ({ x: new Date(weightGainModel.splineTimes[k]), y: weight }))
                     }
                 ]
             },

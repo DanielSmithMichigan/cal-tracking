@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import { selectWeightGainModel } from './weightGainModel/selectors';
 import { selectDiaryEntries } from './diaryEntries/selectors';
 
-import { secPerWeek, ymd, standardDeviation } from './util';
+import { msPerWeek, secPerWeek, ymd, standardDeviation } from './util';
 import { isSameDay } from 'date-fns';
 
 function DietSummary() {
@@ -30,16 +30,16 @@ function DietSummary() {
                 </thead>
                 <tbody>
                     {
-                        weightGainModel.spline_weights.slice(0, weightGainModel.spline_weights.length - 1).map((weight, idx) => 
+                        weightGainModel.splineWeights.slice(0, weightGainModel.splineWeights.length - 1).map((weight, idx) => 
                             (<tr key={idx}>
                                 <td>
-                                    {new Date(weightGainModel.spline_timestamps[idx] * 1000).toDateString()}
+                                    {new Date(weightGainModel.splineTimes[idx]).toDateString()}
                                 </td>
                                 <td>
-                                    {ActualDiet({ allDiaryEntries, spline_timestamps: weightGainModel.spline_timestamps, idx })}
+                                    {ActualDiet({ allDiaryEntries, splineTimes: weightGainModel.splineTimes, idx })}
                                 </td>
                                 <td>
-                                    { _.round((weightGainModel.spline_weights[idx + 1] - weightGainModel.spline_weights[idx]) / (weightGainModel.spline_timestamps[idx + 1] - weightGainModel.spline_timestamps[idx]) * secPerWeek, 3) }
+                                    { _.round((weightGainModel.splineWeights[idx + 1] - weightGainModel.splineWeights[idx]) / (weightGainModel.splineTimes[idx + 1] - weightGainModel.splineTimes[idx]) * msPerWeek, 3) }
                                 </td>
                             </tr>
                             )
@@ -51,9 +51,9 @@ function DietSummary() {
     );
 }
 
-function ActualDiet({ allDiaryEntries, spline_timestamps, idx }) {
-    const dietStartIso = new Date(spline_timestamps[idx] * 1000).toISOString();
-    const dietEndIso = new Date(spline_timestamps[idx + 1] * 1000).toISOString();
+function ActualDiet({ allDiaryEntries, splineTimes, idx }) {
+    const dietStartIso = new Date(splineTimes[idx]).toISOString();
+    const dietEndIso = new Date(splineTimes[idx + 1]).toISOString();
     const diaryEntriesWithoutToday = _.reject(allDiaryEntries, d => isSameDay(new Date(d.timestamp), new Date()));
     const diaryEntriesInBetween = _.filter(diaryEntriesWithoutToday, d => d.timestamp <= dietEndIso && d.timestamp >= dietStartIso);
     const diaryEntriesInBetweenByDay = Object.values(_.groupBy(diaryEntriesInBetween, d => ymd(d.timestamp)));

@@ -6,29 +6,36 @@ import fetch from 'cross-fetch';
 import { endOfDay, subDays } from 'date-fns';
 
 import { queryWeightGainModel } from '../weightGainModel/api';
+import { selectWeights } from './selectors';
+
+import store from '../RootStore';
 
 export function recordWeight({ weight }) {
     return (dispatch) => {
         const user = getUserId();
+        const weightObj = {
+            weight: Number(weight),
+            user
+        };
+        new Promise( resolve => resolve() )
+            .then( () => dispatch({ type: 'QUICK_RECORD_WEIGHT', weight: { ...weightObj, timestamp: new Date().toISOString() } }) )
+            .then( () => dispatch( queryWeightGainModel({ weights: selectWeights()(store.getState()) }) ) );
         return fetch(`${weightApi}/weight/record`, {
             method: 'POST',
             mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                weight: Number(weight),
-                user
-            })
+            body: JSON.stringify(weightObj)
         })
         .then(response => response.json())
-        .then( () => dispatch( retrieveWeights() ) )
-        .then( () => dispatch( queryWeightGainModel() ) );
+        .then( () => dispatch( retrieveWeights() ) );
     };
 }
     
 export function retrieveWeights () {
     return (dispatch) => {
+        let weights;
         const user = getUserId();
         return fetch(`${weightApi}/weight/get`, {
             method: 'POST',
@@ -41,7 +48,9 @@ export function retrieveWeights () {
             })
         })
         .then(response => response.json())
-        .then( (weights) => dispatch({ type: 'WEIGHTS_UPDATED', weights }) );
+        .then( (_weights) => { weights=_weights} )
+        .then( () => dispatch({ type: 'WEIGHTS_UPDATED', weights }) )
+        .then( () => dispatch( queryWeightGainModel({ weights }) ) );
     };
 }
 
@@ -62,6 +71,5 @@ export function deleteWeightEntry ({ timestamp }) {
         })
         .then( response => response.json() )
         .then( () => dispatch( retrieveWeights() ) )
-        .then( () => dispatch( queryWeightGainModel() ) );
     };
 }

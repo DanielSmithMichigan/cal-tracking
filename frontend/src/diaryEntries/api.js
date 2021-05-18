@@ -5,7 +5,10 @@ import fetch from 'cross-fetch';
 
 import { endOfDay, subDays } from 'date-fns';
     
-export function retrieveDiaryEntries () {
+export function retrieveDiaryEntries ({
+    startTimestamp = null,
+    endTimestamp = null
+} = {}) {
     return (dispatch) => {
         return fetch(`${diaryApi}/diary/get-entries`, {
             method: 'POST',
@@ -15,30 +18,11 @@ export function retrieveDiaryEntries () {
             },
             body: JSON.stringify({
                 user: getUserId(),
-                startTime: subDays(new Date(), 9999).toISOString(),
-                endTime: endOfDay(new Date()).toISOString()
+                startTimestamp,
+                endTimestamp
             })
         })
         .then( (response) => response.json() )
-        .then( (diaryEntries) => dispatch({ type: 'DIARY_ENTRIES_UPDATED', diaryEntries }) );
-    };
-}
-
-export function deleteDiaryEntry({ timestamp }) {
-    return (dispatch) => {
-        const user = getUserId();
-        return fetch(`${diaryApi}/diary/delete-entry`, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                timestamp,
-                user
-            })
-        })
-        .then(response => response.json())
-        .then( () => dispatch( retrieveDiaryEntries() ) );
+        .then( (diaryEntries) => dispatch({ type: 'DIARY_ENTRIES_UPDATED', diaryEntries, startTimestamp, endTimestamp }) );
     };
 }

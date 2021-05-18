@@ -3,9 +3,12 @@ import { createStore } from "redux";
 
 const initialState = {
     weightGainModel: {
-        spline_goals: [],
-        spline_timestamps: [],
-        spline_weights: []
+        splineTimes: [],
+        splineWeights: []
+    },
+    historicalPredictions: {
+        newestWeightTimestamp: null,
+        predictions: []
     }
 };
 
@@ -16,6 +19,13 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 weightGainModel
+            };
+        }
+        case 'HISTORICAL_PREDICTIONS_UPDATED': {
+            const { historicalPredictions } = action;
+            return {
+                ...state,
+                historicalPredictions
             };
         }
         default:

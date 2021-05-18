@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectDiaryEntries } from './diaryEntries/selectors';
-import { deleteDiaryEntry } from './diaryEntries/api';
+import { deleteDiaryEntry } from './diaryEntries/actions';
 import { selectModifiedDate } from './currentDate/selectors';
 
 import store from './RootStore';
@@ -12,9 +12,6 @@ export default function DiaryEntriesToday() {
     const currentDate = modifiedDate || new Date();
     const diaryEntries = useSelector( selectDiaryEntries({ days: 0, currentDate }) );
 
-    console.log({
-        diaryEntries
-    })
     return (<div className="horizontal-spanning-segment">
         <table className="table">
             <thead>
@@ -36,7 +33,7 @@ export default function DiaryEntriesToday() {
                                 <button
                                     type="button"
                                     className="button8"
-                                    onClick={() => store.dispatch( deleteDiaryEntry({ timestamp: entry.timestamp}) ) }>
+                                    onClick={() => deleteDiaryEntry({ timestamp: entry.timestamp, currentDate }) }>
                                     x
                                 </button>
                             </td>

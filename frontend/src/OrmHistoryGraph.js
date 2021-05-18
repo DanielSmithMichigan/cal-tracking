@@ -34,8 +34,6 @@ function OrmHistoryGraph({ }) {
                         borderColor: color,
                         fill: false,
                         data: liftData.map(d => {
-                            console.log(d.timestamp);
-                            console.log(new Date(d.timestamp).toISOString());
                             return {
                                 t: new Date(d.timestamp),
                                 y: calculateOneRepMax({ weight: d.weight, repetitions: d.repetitions })

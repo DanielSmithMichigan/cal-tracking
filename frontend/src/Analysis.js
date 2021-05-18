@@ -9,6 +9,7 @@ import TDEEOverTime from './TDEEOverTime';
 import CaloriesRecommendation from './CaloriesRecommendation';
 import DietAdherence from './DietAdherence';
 import Header from './Header';
+import ModelAccuracy from './ModelAccuracy';
 
 export default function() {
     return (
@@ -25,6 +26,7 @@ export default function() {
             />
             <InputOutputGraph />
             <TDEEOverTime />
+            <ModelAccuracy />
         </React.Fragment>
     )
 }

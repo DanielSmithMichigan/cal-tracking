@@ -136,8 +136,12 @@ async function recordSingleEntry(event: any) {
 }
 
 async function getDiaryEntries(event: any) {
-    const { user } = JSON.parse(event.body);
-    const { Items } = await queryDiaryEntriesIteration( user );
+    const {
+        user,
+        startTimestamp = null,
+        endTimestamp = null
+    } = JSON.parse(event.body);
+    const { Items } = await queryDiaryEntriesIteration( user, startTimestamp, endTimestamp );
     return {
         statusCode: 200,
         headers: {
@@ -149,17 +153,28 @@ async function getDiaryEntries(event: any) {
     };
 }
 
-async function queryDiaryEntriesIteration ( user : any, ExclusiveStartKey = undefined ) : Promise<{ Items : [any], LastEvaluatedKey?: String }> {
+async function queryDiaryEntriesIteration ( user : string, startTimestamp : string|null, endTimestamp : string|null, ExclusiveStartKey = undefined ) : Promise<{ Items : [any], LastEvaluatedKey?: String }> {
+    const ExpressionAttributeValues : any = {
+        ':user': user
+    }
+    const ExpressionAttributeNames : any = {
+        '#user': 'user'
+    };
+    let KeyConditionExpression = "#user = :user";
+    if (startTimestamp !== null
+        && endTimestamp !== null) {
+        KeyConditionExpression += " and #timestamp between :startTimestamp and :endTimestamp";
+        ExpressionAttributeValues[':startTimestamp'] = startTimestamp;
+        ExpressionAttributeValues[':endTimestamp'] = endTimestamp;
+        ExpressionAttributeNames['#timestamp'] = 'timestamp';
+    }
+
     let { Items, LastEvaluatedKey } = await new Promise((resolve, reject) => {
         documentClient.query({
             TableName: process.env.DIARY_TABLE_NAME,
-            KeyConditionExpression: "#user = :user",
-            ExpressionAttributeValues: {
-                ':user': user
-            },
-            ExpressionAttributeNames: {
-                '#user': 'user'
-            },
+            KeyConditionExpression,
+            ExpressionAttributeValues,
+            ExpressionAttributeNames,
             ExclusiveStartKey
         }, function (err: any, output: any) {
             console.log(err);
@@ -168,7 +183,7 @@ async function queryDiaryEntriesIteration ( user : any, ExclusiveStartKey = unde
         });
     });
     while( LastEvaluatedKey ) {
-        const { Items : MoreItems, LastEvaluatedKey: NextLastEvaluatedKey } = await queryDiaryEntriesIteration( user, LastEvaluatedKey );
+        const { Items : MoreItems, LastEvaluatedKey: NextLastEvaluatedKey } = await queryDiaryEntriesIteration( user, startTimestamp, endTimestamp, LastEvaluatedKey );
         LastEvaluatedKey = NextLastEvaluatedKey;
         Items = Items.concat(MoreItems); 
     }

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import _ from 'lodash';
 
 import { getNextHour, msPerHour, getStartEndTime } from '../util';
+import { startOfDay, subDays, differenceInHours } from 'date-fns';
 
 import constants from './constants';
 
@@ -11,6 +12,8 @@ import { selectDiaryEntries } from '../diaryEntries/selectors';
 import { selectModifiedDate } from '../currentDate/selectors';
 
 import TimeOfDay from '../components/timeOfDay';
+
+const historicalDays = 7;
 
 function SingleGoalProgress({
     goalName
@@ -30,7 +33,7 @@ function SingleGoalProgress({
     const consumedAmount = Math.round(_.sumBy(diaryEntries, `meal.${goalName}`));
 
     const { startTime, endTime } = getStartEndTime({ firstMealTime, lastMealTime });
-    const hoursElapsed = (new Date().getTime() - startTime.getTime()) / msPerHour;
+    const hoursElapsed = (currentDate.getTime() - startTime.getTime()) / msPerHour;
     const msPerDay = endTime.getTime() - startTime.getTime();
     const goalConsumedPerMs = goalAmountPerDay / msPerDay;
     const goalConsumedPerHour = Math.round(goalConsumedPerMs * msPerHour);
@@ -42,10 +45,18 @@ function SingleGoalProgress({
     const surplusSymbol = differenceConsumedVsGoal < 0 ? '+' : '-';
     const surplusLanguageDay = differenceConsumedVsDay < 0 ? 'surplus' : 'deficit';
     const surplusSymbolDay = differenceConsumedVsDay < 0 ? '+' : '-';
+
+    const historicalEntries = useSelector( selectDiaryEntries({ days: historicalDays - 1, currentDate }) );
+    const historicalConsumedAmount = _.round( _.sumBy(historicalEntries, `meal.${goalName}`) );
+    const historicalGoalConsumedAmount = Math.round((historicalDays - 1) * goalAmountPerDay + unclampedGoalConsumedAmount);
+    const differenceConsumedVsHistoricalGoal = Math.round(historicalGoalConsumedAmount - historicalConsumedAmount);
+    const surplusLanguageHistorical = differenceConsumedVsHistoricalGoal < 0 ? 'surplus' : 'deficit';
+    const surplusSymbolHistorical = differenceConsumedVsHistoricalGoal < 0 ? '+' : '-';
     return (
         <div className='horizontal-spanning-segment'>
             For <TimeOfDay time={new Date()}/>, you are at {consumedAmount}/{goalConsumedAmount} (<span className={surplusLanguage}>{surplusSymbol} {Math.abs(differenceConsumedVsGoal)}</span>) {labelPlural}. <br />
             For your daily goal, you are at {consumedAmount}/{goalAmountPerDay} (<span className={surplusLanguageDay}>{surplusSymbolDay} {Math.abs(differenceConsumedVsDay)}</span>).<br />
+            For {historicalDays} days, you are at {historicalConsumedAmount}/{historicalGoalConsumedAmount} (<span className={surplusLanguageHistorical}>{surplusSymbolHistorical} {Math.abs(differenceConsumedVsHistoricalGoal)}</span>).<br />
             {goalName === 'calories' && ConsumptionOnly({ diaryEntries, goalName }) }
         </div>
     );

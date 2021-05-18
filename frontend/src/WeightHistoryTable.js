@@ -9,7 +9,6 @@ import store from './RootStore';
 
 export default function () {
     const weights = useSelector( selectWeights() );
-    console.log(weights);
     return (
         <div className="horizontal-spanning-segment">
             <table className="table">

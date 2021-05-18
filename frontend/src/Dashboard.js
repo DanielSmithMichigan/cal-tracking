@@ -17,7 +17,7 @@ import Recommendations from './Recommendations';
 function Dashboard() {
     const isLoading = useSelector(selectIsLoading);
     useEffect(() => {
-        userInitialization();
+        userInitialization({ retrieveHistoricalDiaryEntries: false });
     }, []);
     const page = useSelector(selectPage);
     if (isLoading) {

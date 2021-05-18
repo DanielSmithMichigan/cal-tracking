@@ -5,7 +5,8 @@ import { getUserId, randomizedDate } from '../util';
 import { goalsApi, mealsApi, diaryApi, weightApi } from '../constants';
 import fetch from 'cross-fetch';
 
-import { endOfDay, subDays } from 'date-fns';
+import { startOfDay, addDays, subDays } from 'date-fns';
+import { add } from 'lodash';
 
 export function dispatchRecordOneTimeDiaryEntry({
     mealName,
@@ -32,11 +33,12 @@ export function dispatchRecordOneTimeDiaryEntry({
         })
     })
     .then( (response) => response.json() )
-    .then( () => store.dispatch( retrieveDiaryEntries() ) );
+    .then( () => retrieveTodaysDiaryEntries({ currentDate }) );
 }
 
 export function dispatchAddDiaryEntry ({ mealName, modifiedDate }) {
-    const currentDate = randomizedDate({ modifiedDate });
+    const currentDate = modifiedDate || new Date();
+    const randomDate = randomizedDate({ modifiedDate });
     return fetch(`${diaryApi}/diary/add-entry`, {
         method: 'POST',
         mode: 'no-cors',
@@ -46,10 +48,41 @@ export function dispatchAddDiaryEntry ({ mealName, modifiedDate }) {
         body: JSON.stringify({
             user: getUserId(),
             mealName,
-            timestamp: currentDate.toISOString()
+            timestamp: randomDate.toISOString()
         })
     })
     .then(response => response.json())
-    .then( () => store.dispatch(retrieveDiaryEntries()) );
+    .then( () => retrieveTodaysDiaryEntries({ currentDate }) );
 }
-    
+
+
+export function deleteDiaryEntry({ timestamp, currentDate }) {
+    const user = getUserId();
+    return fetch(`${diaryApi}/diary/delete-entry`, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            timestamp,
+            user
+        })
+    })
+    .then(response => response.json())
+    .then( () => retrieveTodaysDiaryEntries({ currentDate }) );
+}
+
+export function retrieveTodaysDiaryEntries({ currentDate=new Date() } = {}) {
+    return store.dispatch( retrieveDiaryEntries({
+        startTimestamp: startOfDay( currentDate ).toISOString(),
+        endTimestamp: startOfDay( addDays( currentDate, 1) ).toISOString()
+    }) );
+}
+
+export function retrieveDiaryEntriesByDays({ days, currentDate = new Date() } = {}) {
+    return store.dispatch( retrieveDiaryEntries({
+        startTimestamp: startOfDay( subDays( currentDate, days ) ).toISOString(),
+        endTimestamp: startOfDay( addDays( currentDate, 1) ).toISOString()
+    }) );
+}
